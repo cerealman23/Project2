@@ -1,0 +1,74 @@
+* Ns lookup
+
+#+begin_src shell :results output :exports output
+
+nslookup -type=mx tcnj.edu
+  
+#+end_src
+
+#+RESULTS:
+: Server:		159.91.14.83
+: Address:	159.91.14.83#53
+: 
+: tcnj.edu	mail exchanger = 20 mxgate1.tcnj.edu.
+: tcnj.edu	mail exchanger = 20 mxgate2.tcnj.edu.
+: 
+
+
+* Telent 
+
+#+begin_src shell :results output :exports output
+
+telnet 
+  
+#+end_src
+
+* Gmail
+
+#+begin_src shell :results output :exports output
+nslookup -type=mx gmail.com 
+#+end_src
+
+#+RESULTS:
+#+begin_example
+,*** Invalid option: v
+Server:		159.91.14.83
+Address:	159.91.14.83#53
+
+Non-authoritative answer:
+gmail.com	mail exchanger = 5 gmail-smtp-in.l.google.com.
+gmail.com	mail exchanger = 20 alt2.gmail-smtp-in.l.google.com.
+gmail.com	mail exchanger = 40 alt4.gmail-smtp-in.l.google.com.
+gmail.com	mail exchanger = 30 alt3.gmail-smtp-in.l.google.com.
+gmail.com	mail exchanger = 10 alt1.gmail-smtp-in.l.google.com.
+
+Authoritative answers can be found from:
+gmail-smtp-in.l.google.com	internet address = 142.251.163.27
+alt1.gmail-smtp-in.l.google.com	internet address = 209.85.202.26
+
+#+end_example
+
+* TLS
+
+
+#+begin_src shell :results output :exports output
+
+  perl -MMIME::Base64 -e 'print 
+encode_base64("\000kahoram1\@gmail.com\000A59209502z%")' 
+
+#+end_src
+
+#+RESULTS:
+: AGthaG9yYW0xQGdtYWlsLmNvbQBBNTkyMDk1MDJ6JQ==
+
+* Connecting to 
+
+
+
+#+begin_src shell :results output :exports output
+
+  openssl s_client -starttls smtp -connect smtp.gmail.com:587 -crlf -ign_eof
+
+#+end_src
+
+#+RESULTS:
