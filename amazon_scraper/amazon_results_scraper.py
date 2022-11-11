@@ -27,21 +27,27 @@ def search_amazon(item):
     driver.implicitly_wait(5)
 
     #get num pages
-    try:
-        num_page = driver.find_element(By.XPATH, '//*[@class="a-pagination"]/li[6]')
-    except NoSuchElementException:
-        num_page = driver.find_element(By.CLASS_NAME, 'a-last').click()
+#    try:
+#        num_page = driver.find_element(By.XPATH, '//*[@class="a-pagination"]/li[6]')
+        #num_page = driver.find_element(By.XPATH, '//*[@class="s-pagination"]/li[6]')#amazon changed their html so we cant go by list item anymore
+#    except NoSuchElementException:
+#        num_page = driver.find_element(By.CLASS_NAME, 'a-last').click()
+        #num_page = driver.find_element(By.CLASS_NAME, 's-pagination-item s-pagination-diabled').click()#maybe we can hardcode 2 pages in for testing
+    
+    num_page = 2 #TESTCODE
 
     driver.implicitly_wait(3)
 
     #Iterate through every pages collecting url
     url_list = []
 
-    for i in range(int(num_page.text)):
+    #for i in range(int(num_page.text)):
+    for i in range(num_page):
         page_ = i + 1
         url_list.append(driver.current_url)
         driver.implicitly_wait(4)
-        click_next = driver.find_element(By.CLASS_NAME, 'a-last').click()                        
+#        click_next = driver.find_element(By.CLASS_NAME, 'a-last').click()
+        #click_next = driver.find_element(By.CLASS_NAME, 's-pagination-item').click()                         
         print("Page " + str(page_) + " grabbed")
 
     #after we get results
