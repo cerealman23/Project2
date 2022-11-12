@@ -8,6 +8,7 @@ from selectorlib import Extractor
 import requests
 import json
 import time
+from bs4 import BeautifulSoup
 
 #take the string for the item we want to search for on Amazon as an input
 def search_amazon(item):
@@ -26,13 +27,18 @@ def search_amazon(item):
     #wait for the website to actually load the first page of results or else we will get errors 
     driver.implicitly_wait(5)
 
+    # try:
+    #     num_page = driver.find_element(By.XPATH, '//*[@class="a-pagination"]/li[6]')
+    # except NoSuchElementException:
+    #     num_page = driver.find_element(By.CLASS_NAME, 'a-last').click()
+
     #get num pages
-#    try:
-#        num_page = driver.find_element(By.XPATH, '//*[@class="a-pagination"]/li[6]')
-        #num_page = driver.find_element(By.XPATH, '//*[@class="s-pagination"]/li[6]')#amazon changed their html so we cant go by list item anymore
-#    except NoSuchElementException:
-#        num_page = driver.find_element(By.CLASS_NAME, 'a-last').click()
-        #num_page = driver.find_element(By.CLASS_NAME, 's-pagination-item s-pagination-diabled').click()#maybe we can hardcode 2 pages in for testing
+    # try:
+    #     num_page = driver.find_element(By.XPATH, '//*[@class="a-pagination"]/li[6]')
+    #     num_page = driver.find_element(By.XPATH, '//*[@class="s-pagination"]/li[6]')#amazon changed their html so we cant go by list item anymore
+    # except NoSuchElementException:
+    #     num_page = driver.find_element(By.CLASS_NAME, 'a-last').click()
+    #     num_page = driver.find_element(By.CLASS_NAME, 's-pagination-item s-pagination-diabled').click()#maybe we can hardcode 2 pages in for testing
     
     num_page = 2 #TESTCODE
 
@@ -47,7 +53,7 @@ def search_amazon(item):
         url_list.append(driver.current_url)
         driver.implicitly_wait(4)
 #        click_next = driver.find_element(By.CLASS_NAME, 'a-last').click()
-        #click_next = driver.find_element(By.CLASS_NAME, 's-pagination-item').click()                         
+        #click_next = driver.find_element(By.CLASS_NAME, 's-pagination-item').click()
         print("Page " + str(page_) + " grabbed")
 
     #after we get results
