@@ -31,19 +31,30 @@ def search_account(item):
   profile = driver.find_element(By.XPATH, "//div[@id='reviews-medley-footer']/div[@class='a-row a-spacing-medium']/a").click()
 
   # profiles = driver.find_element(By.XPATH, "//div[@class='a-fixed-right-grid-col a-col-left']/div[@data-hook='gneome-widget']/a")
-  profiles = driver.find_element(By.CSS_SELECTOR, "div[data-hook=genome-widget] > a")
+  profiles = driver.find_elements(By.CSS_SELECTOR, "div[data-hook=genome-widget] > a")
   # profiles = driver.find_elements(By.CSS_SELECTOR, "div[data-hook=genome-widget] > a")
 
-  # for item in driver.find_elements(By.CSS_SELECTOR, "div[data-hook=genome-widget] > a"):
-  #   driver.implicitly_wait(4)
-  #   item.send_keys(Keys.CONTROL + Keys.RETURN)
-  profiles.send_keys(Keys.CONTROL + Keys.RETURN)
 
-  time.sleep(10)
+  scores = []
+
+
+  for i in range(len(profiles)):
+    item = driver.find_elements(By.CSS_SELECTOR, "div[data-hook=genome-widget] > a")[i]
+    item.click()
+    data = driver.find_element(By.XPATH, "//span[@class='impact-text']")
+    scores.append(data.text)
+    driver.back()
+    driver.implicitly_wait(2)
+    # driver.find_elements(By.CSS_SELECTOR, "div[data-hook=genome-widget] > a")
+
+
+  # time.sleep(10)
+
+  print(scores)
+
   driver.quit()
 
 
   #Click the search button
 
 search_account("headphones")
-text
