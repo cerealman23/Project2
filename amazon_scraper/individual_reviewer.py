@@ -45,8 +45,6 @@ def search_account(link):
 
   # all profiles on one page
   profiles = driver.find_elements(By.CSS_SELECTOR, "div[data-hook=genome-widget] > a")
-  reviews = driver.find_elements(By.XPATH,"//div[@class='a-section review aok-relative']")
-  reviews_body = driver.find_elements(By.XPATH, "//div/span[@data-hook='review-body']")
 
   scores = []
 
@@ -58,9 +56,13 @@ def search_account(link):
       # Have to reset in order to not get a stale element reference
       item = driver.find_elements(By.CSS_SELECTOR, "div[data-hook=genome-widget] > a")[i]
       item.click()
-      # gets the score from one reviewer and adds it to the data list
-      data = driver.find_element(By.XPATH, "//span[@class='impact-text']")
-      scores.append(data.text)
+
+      try:
+        # gets the score from one reviewer and adds it to the data list
+        data = driver.find_element(By.XPATH, "//span[@class='impact-text']")
+        scores.append(data.text)
+      except NoSuchElementException:
+        time.sleep(1)
 
       driver.back()
       # so IP does not get blocked
@@ -72,12 +74,19 @@ def search_account(link):
       #click next page 
       item = driver.find_element(By.XPATH, '//*[@id="cm_cr-pagination_bar"]/ul/li[2]/a')
       item.click()
+      pagesToReview -= 1
     except NoSuchElementException:
       pagesToReview = 0
     #except IndexError:
      # pagesToReview = False
 
-
+  avg = 0
+  if len(scores) < 8:
+    print("Low number of reviewes: product could be unreliable proceed with caution")
+  elif avg > 300:
+    print("Product should be reliable")
+  else:
+    print("Low reviewer scores: product could be unreliable proceed with caution")
 
   # time.sleep(10)
 
@@ -88,4 +97,4 @@ def search_account(link):
 
   #Click the search button
 
-search_account('https://www.amazon.com/Tile-Bluetooth-Battery-Water-Resistant-Compatible/dp/B09998MBFM/ref=pd_rhf_d_cr_s_pd_crcbs_sccl_1_4/144-4848069-3917667?pd_rd_w=74mOJ&content-id=amzn1.sym.31346ea4-6dbc-4ac4-b4f3-cbf5f8cab4b9&pf_rd_p=31346ea4-6dbc-4ac4-b4f3-cbf5f8cab4b9&pf_rd_r=MYJNY1DP9B6JWEJ04Z98&pd_rd_wg=3mMqY&pd_rd_r=5a2be869-d094-4602-83ed-0cb4467c0df9&pd_rd_i=B09998MBFM&psc=1')
+search_account('https://www.amazon.com/Oral-B-Electronic-Rechargeable-Toothbrush-Connectivity/dp/B01DT0K6J2?ref_=Oct_DLandingS_D_deed215c_61&smid=ATVPDKIKX0DER')
