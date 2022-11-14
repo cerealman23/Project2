@@ -1,20 +1,3 @@
-#!/usr/bin/env python3
-
-class Reviewer:
-
-  def __init__(self, score, verified, long_review, image_profile):
-    self.score = score
-    # self.profile_picture = profile_picture
-    self.verified = verified
-    self.long_review = long_review
-    self.image_profile = image_profile
-
-# If they have a image they are credible
-# If they have a high amazon score they are better off DONE
-# Long reviews score better
-# make sure they are a verified purchaser
-# the more people who find it helpful the better
-
 from selenium import webdriver
 from webdriver_manager.chrome import ChromeDriverManager
 from selenium.common.exceptions import NoSuchElementException
@@ -27,8 +10,11 @@ import time
 from bs4 import BeautifulSoup
 import random
 
-def search_account(link):
 
+def search_account(link):
+  PAGESTOREVIEW = 3
+  MINREVIEWS = 8
+  MINSCORE = 25
   driver = webdriver.Chrome(ChromeDriverManager().install())
   #load the Amazon homepage
   driver.get(link)
@@ -50,30 +36,33 @@ def search_account(link):
 
   scores = []
 
-  pagesToReview = 3
-
-  while pagesToReview != 0:
+  while PAGESTOREVIEW != 0:
     for i in range(len(profiles)):
 
       # Have to reset in order to not get a stale element reference
       item = driver.find_elements(By.CSS_SELECTOR, "div[data-hook=genome-widget] > a")[i]
       item.click()
-      # gets the score from one reviewer and adds it to the data list
-      data = driver.find_element(By.XPATH, "//span[@class='impact-text']")
-      scores.append(data.text)
+      try:
+        # gets the score from one reviewer and adds it to the data list
+        data = driver.find_element(By.XPATH, "//span[@class='impact-text']")
+        scores.append(data.text)
+      except NoSuchElementException:
+        delay = random.randrange(1, 5)
+        time.sleep(delay)
 
       driver.back()
+
       # so IP does not get blocked
       delay = random.randrange(1, 5)
-      #driver.implicitly_wait(delay)
       time.sleep(delay)
     
     try:
       #click next page 
       item = driver.find_element(By.XPATH, '//*[@id="cm_cr-pagination_bar"]/ul/li[2]/a')
       item.click()
+      PAGESTOREVIEW = PAGESTOREVIEW - 1
     except NoSuchElementException:
-      pagesToReview = 0
+      PAGESTOREVIEW = 0
     #except IndexError:
      # pagesToReview = False
 
@@ -81,7 +70,21 @@ def search_account(link):
 
   # time.sleep(10)
 
-  print(scores)
+  #print(scores)
+
+  intscores = [eval(i) for i in scores]
+  avg = sum(intscores) / len(intscores)
+
+  print("Average reviewer score: " + str(avg))
+
+  if len(scores) < MINREVIEWS:
+    print("Low number of reviews: product could be unreliable please proceed with caution")
+  elif avg > MINSCORE:
+    print("Product should be reliable")
+  else:
+    print("Low reviewer scores: product could be unreliable please proceed with caution")
+
+  
 
   driver.quit()
 
