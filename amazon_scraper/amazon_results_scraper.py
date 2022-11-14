@@ -26,29 +26,18 @@ def search_amazon(item):
     #wait for the website to actually load the first page of results or else we will get errors 
     driver.implicitly_wait(5)
 
-    #get num pages
-#    try:
-#        num_page = driver.find_element(By.XPATH, '//*[@class="a-pagination"]/li[6]')
-        #num_page = driver.find_element(By.XPATH, '//*[@class="s-pagination"]/li[6]')#amazon changed their html so we cant go by list item anymore
-#    except NoSuchElementException:
-#        num_page = driver.find_element(By.CLASS_NAME, 'a-last').click()
-        #num_page = driver.find_element(By.CLASS_NAME, 's-pagination-item s-pagination-diabled').click()#maybe we can hardcode 2 pages in for testing
-    
-    num_page = 2 #TESTCODE
-
-    driver.implicitly_wait(3)
 
     #Iterate through every pages collecting url
     url_list = []
 
-    #for i in range(int(num_page.text)):
-    for i in range(num_page):
-        page_ = i + 1
-        url_list.append(driver.current_url)
-        driver.implicitly_wait(4)
-#        click_next = driver.find_element(By.CLASS_NAME, 'a-last').click()
-        #click_next = driver.find_element(By.CLASS_NAME, 's-pagination-item').click()                         
-        print("Page " + str(page_) + " grabbed")
+
+    url_list.append(driver.current_url)
+    driver.implicitly_wait(4)
+
+    lst_of_ratings = driver.find_elements(By.XPATH, '//*[@id="search"]/div[1]/div[1]/div/span[1]/div[1]/div[3]/div/div/div/div/div/div/div/div[2]/div/div/div[2]/div/span[2]/a').click()
+#    for value in lst_of_ratings:
+#        rating = value.get_attribute('textContent')
+#        print("Rating", rating)
 
     #after we get results
     driver.quit()
@@ -101,7 +90,7 @@ with open("search_results_urls.txt",'r') as urllist, open('search_results_output
         if data:
             for product in data['products']:
                 product['search_url'] = url
-                print("Saving Product: %s"%product['title'].encode('utf8'))
+                #print("Saving Product: %s"%product['title'].encode('utf8'))
                 json.dump(product,outfile)
                 outfile.write("\n")
                 # sleep(5)
