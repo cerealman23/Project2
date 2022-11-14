@@ -27,11 +27,11 @@ import time
 from bs4 import BeautifulSoup
 import random
 
-def search_account(item):
+def search_account(link):
 
   driver = webdriver.Chrome(ChromeDriverManager().install())
   #load the Amazon homepage
-  driver.get('https://www.amazon.com/Disney-Friends-Leopard-Portrait-T-Shirt/dp/B082BXV2F3/ref=lp_21417004011_1_4')
+  driver.get(link)
   #Input the name of the item(s) we want to search for into the search bar
 
   driver.implicitly_wait(5)
@@ -50,30 +50,33 @@ def search_account(item):
 
   scores = []
 
-  for i in range(len(profiles)):
+  pagesToReview = 3
 
-    review = driver.find_elements(By.XPATH,"//div[@class='a-section review aok-relative']")[i]
-    # verified = review.find_element(By.LINK_TEXT, 'Verified Purchase')
-    body = review.find_elements(By.XPATH, "//div/span[@data-hook='review-body']")[i]
+  while pagesToReview != 0:
+    for i in range(len(profiles)):
 
-    body_size = len(body)
+      # Have to reset in order to not get a stale element reference
+      item = driver.find_elements(By.CSS_SELECTOR, "div[data-hook=genome-widget] > a")[i]
+      item.click()
+      # gets the score from one reviewer and adds it to the data list
+      data = driver.find_element(By.XPATH, "//span[@class='impact-text']")
+      scores.append(data.text)
 
-    # Have to reset in order to not get a stale element reference
-    item = driver.find_elements(By.CSS_SELECTOR, "div[data-hook=genome-widget] > a")[i]
-    item.click()
-    # gets the score from one reviewer and adds it to the data list
-    data = driver.find_element(By.XPATH, "//span[@class='impact-text']")
-    scores.append(data.text)
+      driver.back()
+      # so IP does not get blocked
+      delay = random.randrange(1, 5)
+      #driver.implicitly_wait(delay)
+      time.sleep(delay)
+    
+    try:
+      #click next page 
+      item = driver.find_element(By.XPATH, '//*[@id="cm_cr-pagination_bar"]/ul/li[2]/a')
+      item.click()
+    except NoSuchElementException:
+      pagesToReview = 0
+    #except IndexError:
+     # pagesToReview = False
 
-    profile_pic = driver.find_element(By.ID, "avatar-image")
-
-    # if 'https://www.amazon.com/avatar/default/' in profile_pic.get_attribute("src"):
-    #   avatar = False
-    driver.back()
-    # so IP does not get blocked
-    delay = random.randrange(1, 5)
-    driver.implicitly_wait(delay)
-    # driver.find_elements(By.CSS_SELECTOR, "div[data-hook=genome-widget] > a")
 
 
   # time.sleep(10)
@@ -85,4 +88,4 @@ def search_account(item):
 
   #Click the search button
 
-search_account("headphones")
+search_account('https://www.amazon.com/Tile-Bluetooth-Battery-Water-Resistant-Compatible/dp/B09998MBFM/ref=pd_rhf_d_cr_s_pd_crcbs_sccl_1_4/144-4848069-3917667?pd_rd_w=74mOJ&content-id=amzn1.sym.31346ea4-6dbc-4ac4-b4f3-cbf5f8cab4b9&pf_rd_p=31346ea4-6dbc-4ac4-b4f3-cbf5f8cab4b9&pf_rd_r=MYJNY1DP9B6JWEJ04Z98&pd_rd_wg=3mMqY&pd_rd_r=5a2be869-d094-4602-83ed-0cb4467c0df9&pd_rd_i=B09998MBFM&psc=1')
