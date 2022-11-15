@@ -24,6 +24,21 @@ def search_account(link):
   # search for headphones by clicking them.
   search_box = driver.find_element(By.ID, 'acrCustomerReviewText').click()
 
+
+
+  # counts how many customer images are included
+
+  # first navigates to pictures page
+  item = driver.find_element(By.XPATH, '//*[@id="seeAllImages"]/a')
+  item.click()
+
+  images = driver.find_elements(By.CSS_SELECTOR, 'div[class= cr-thumbnail-preview-tile]')
+  imagecount = len(images)
+
+  # closes the pictures page
+  item = driver.find_element(By.XPATH, '/html/body/div[4]/div/div/header/button')
+  item.click()
+
   reviewers = []
 
   #  This finds the butten that goes to the recview page
@@ -67,7 +82,6 @@ def search_account(link):
      # pagesToReview = False
 
 
-
   # time.sleep(10)
 
   #print(scores)
@@ -81,14 +95,13 @@ def search_account(link):
     print("Low number of reviews: product could be unreliable please proceed with caution")
   elif avg > MINSCORE:
     print("Product should be reliable")
+  elif imagecount > 10:
+    print("Product should be reliable")
   else:
-    print("Low reviewer scores: product could be unreliable please proceed with caution")
-
-  
+    print("Low reviewer scores and low number of images: product could be unreliable please proceed with caution")
 
   driver.quit()
 
-
   #Click the search button
 
-search_account('https://www.amazon.com/Tile-Bluetooth-Battery-Water-Resistant-Compatible/dp/B09998MBFM/ref=pd_rhf_d_cr_s_pd_crcbs_sccl_1_4/144-4848069-3917667?pd_rd_w=74mOJ&content-id=amzn1.sym.31346ea4-6dbc-4ac4-b4f3-cbf5f8cab4b9&pf_rd_p=31346ea4-6dbc-4ac4-b4f3-cbf5f8cab4b9&pf_rd_r=MYJNY1DP9B6JWEJ04Z98&pd_rd_wg=3mMqY&pd_rd_r=5a2be869-d094-4602-83ed-0cb4467c0df9&pd_rd_i=B09998MBFM&psc=1')
+search_account('https://www.amazon.com/Disney-Friends-Leopard-Portrait-T-Shirt/dp/B082BXV2F3/ref=lp_21417004011_1_4?customId=B07537H64L&th=1')
